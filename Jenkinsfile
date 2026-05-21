@@ -136,6 +136,7 @@ pipeline {
         always {
 
             sh '''
+                docker network disconnect $NETWORK jenkins-server || true
                 docker rm -f mongo-test || true
                 docker rm -f test-notification || true
                 docker network rm $NETWORK || true
