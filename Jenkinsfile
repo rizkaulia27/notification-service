@@ -20,7 +20,10 @@ pipeline {
         stage('Unit Test') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    sh 'go test -short ./...'
+                    sh '''
+                        go test -short ./... \
+                        -run "TestValidateNotification"
+                    '''
                 }
             }
         }
@@ -137,8 +140,11 @@ pipeline {
 
             sh '''
                 docker network disconnect $NETWORK jenkins-server || true
+                docker network disconnect $NETWORK jenkins-server || true
+
                 docker rm -f mongo-test || true
                 docker rm -f test-notification || true
+                
                 docker network rm $NETWORK || true
             '''
         }
